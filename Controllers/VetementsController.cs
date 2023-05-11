@@ -50,6 +50,21 @@ namespace Atelier.Controllers
                 {
                     vetements = vetements.Where(s => s.Nom!.Contains(searchString));
                 }
+            }
+
+            if (!string.IsNullOrEmpty(vetementType))
+            {
+                vetements = vetements.Where(x => x.Type == vetementType);
+            }
+
+            var vetementTempVM = new VetementTypeViewModel
+            {
+                Type = new SelectList(await typeQuery.Distinct().ToListAsync()),
+                Vetements = await vetements.Where(v => v.ProprietaireId == currentUserId).ToListAsync()
+            };
+            vetementTypeVM = vetementTempVM;
+            return View(vetementTypeVM);
+        }
 
         // GET: Aleatoire
         public async Task<IActionResult> Random()
@@ -60,21 +75,6 @@ namespace Atelier.Controllers
             var isAuthorized = User.IsInRole(AuthorizationConstants.VetementAdministratorsRole);
 
             //CREATION TENU RANDOM
-
-            //RECUPERATION DE DONNEES
-            /*var vetements = from v in context.Vetement select v;
-            var currentUserId = UserManager.GetUserId(User);
-            var rnd = new Random();
-
-            //RANDOMISATEUR
-            var RandomVetements = from v in context.Vetement select v;
-            var randomNumber = 1;
-
-            //DONNES
-            List<int> idRandomTenu = new List<int>();
-            var vetementsChoisis = from v in context.Vetement select v;
-            int query;
-            var RandomTenu = from v in context.Vetement select v;*/
             List<int> idRandomTenu = new List<int>();
 
             var rnd = new Random();
@@ -165,21 +165,6 @@ namespace Atelier.Controllers
 
             //RETURN
             return RandomVetements.First().VetementId;
-        }
-
-                if (!string.IsNullOrEmpty(vetementType))
-                {
-                    vetements = vetements.Where(x => x.Type == vetementType);
-                }
-
-                var vetementTempVM = new VetementTypeViewModel
-                {
-                    Type = new SelectList(await typeQuery.Distinct().ToListAsync()),
-                    Vetements = await vetements.Where(v => v.ProprietaireId == currentUserId).ToListAsync()
-                };
-                vetementTypeVM = vetementTempVM;
-            }
-            return View(vetementTypeVM);
         }
 
         // GET: Vetements/Details/5
@@ -282,7 +267,7 @@ namespace Atelier.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("VetementId,Nom,Description,DateObtention,Type,IsTenu2,Image")] Vetement vetement)
+        public async Task<IActionResult> Edit(int id, [Bind("VetementId,Nom,Description,DateObtention,Type,IsTenu2,ImageVetement")] Vetement vetement)
         {
            
 

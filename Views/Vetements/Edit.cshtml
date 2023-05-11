@@ -45,11 +45,14 @@
                     <option value="oui">oui</option>
                 </select>
             </div>
-            <div class="form-group">
-                <label asp-for="ImageVetement" class="control-label"></label>
-                <input asp-for="ImageVetement" class="form-control" />
-                <span asp-validation-for="ImageVetement" class="text-danger"></span>
-            </div>
+            <div class="form-group">  
+                <label asp-for="ImageVetement" class="control-label"></label>  
+                    <div class="custom-file">  
+                        <input asp-for="ImageVetement" class="custom-file-input" id="customFile">  
+                    </div>  
+                <span asp-validation-for="ImageVetement" class="text-danger"></span>  
+            </div>  
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
