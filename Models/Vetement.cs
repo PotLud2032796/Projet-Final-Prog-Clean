@@ -9,5 +9,6 @@
         public string Description { get; set; }
         public DateTime DateObtention { get; set; }
         public string Image { get; set; }
+        public string IsTenu2 { get; set; }
     }
 }
