@@ -85,11 +85,11 @@ namespace Atelier.Data
                 return;
             }
             context.Vetement.AddRange(
-                new Vetement { Nom = "T-shirt bleu", ProprietaireId = adminID, DateObtention = DateTime.Now, Description = "Allo", Type = "Haut", Image = "Allo" },
-                new Vetement { Nom = "Camisole verte", ProprietaireId = adminID, DateObtention = DateTime.Now, Description = "Allo", Type = "Haut", Image = "Allo" },
-                new Vetement { Nom = "Chienne de travail", ProprietaireId = adminID, DateObtention = DateTime.Now, Description = "Allo", Type = "Haut", Image = "Allo" },
-                new Vetement { Nom = "Mom Jeans", ProprietaireId = adminID, DateObtention = DateTime.Now, Description = "Allo", Type = "Haut", Image = "Allo" },
-                new Vetement { Nom = "Espadrilles", ProprietaireId = adminID, DateObtention = DateTime.Now, Description = "Allo", Type = "Haut", Image = "Allo" });
+                new Vetement { Nom = "T-shirt bleu", ProprietaireId = adminID, DateObtention = DateTime.Now, Description = "Allo", Type = "Haut", ImageVetement = null },
+                new Vetement { Nom = "Camisole verte", ProprietaireId = adminID, DateObtention = DateTime.Now, Description = "Allo", Type = "Haut", ImageVetement = null },
+                new Vetement { Nom = "Chienne de travail", ProprietaireId = adminID, DateObtention = DateTime.Now, Description = "Allo", Type = "Haut", ImageVetement = null },
+                new Vetement { Nom = "Mom Jeans", ProprietaireId = adminID, DateObtention = DateTime.Now, Description = "Allo", Type = "Haut", ImageVetement = null },
+                new Vetement { Nom = "Espadrilles", ProprietaireId = adminID, DateObtention = DateTime.Now, Description = "Allo", Type = "Haut", ImageVetement = null });
             context.SaveChanges();
         }
     }

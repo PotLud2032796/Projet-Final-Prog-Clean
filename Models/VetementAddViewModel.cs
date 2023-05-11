@@ -1,6 +1,6 @@
 ﻿namespace Atelier.Models
 {
-    public class Vetement
+    public class VetementAddViewModel
     {
         public int VetementId { get; set; }
         public string Nom { get; set; }
@@ -8,6 +8,6 @@
         public string Type { get; set; }
         public string Description { get; set; }
         public DateTime DateObtention { get; set; }
-        public string ImageVetement { get; set; }
+        public IFormFile ImageVetement { get; set; }
     }
 }

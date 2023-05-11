@@ -10,6 +10,7 @@ using Atelier.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Atelier.Authorizations;
+using Atelier.Models;
 
 namespace Atelier.Controllers
 {
@@ -18,26 +19,52 @@ namespace Atelier.Controllers
         private readonly ApplicationDbContext context;
         private IAuthorizationService AuthorizationService { get; }
         private UserManager<IdentityUser> UserManager { get; }
+        private readonly IWebHostEnvironment webHostEnvironment;
 
-        public VetementsController(ApplicationDbContext context, IAuthorizationService authorizationService, UserManager<IdentityUser> userManager) 
+        public VetementsController(ApplicationDbContext context, IAuthorizationService authorizationService, UserManager<IdentityUser> userManager, IWebHostEnvironment webHostEnvironment)
         {
             this.context = context;
             AuthorizationService = authorizationService;
-            UserManager = userManager; 
+            UserManager = userManager;
+            this.webHostEnvironment = webHostEnvironment;
         }
 
         // GET: Vetements
-        public async Task<IActionResult> Index() 
-        { 
-            if (context.Vetement == null) 
-                return NotFound(); 
+        public async Task<IActionResult> Index(string vetementType, string searchString)
+        {
+            if (context.Vetement == null)
+                return NotFound();
 
-            var vetements = from v in context.Vetement select v; 
-            var isAuthorized = User.IsInRole(AuthorizationConstants.VetementAdministratorsRole); 
-            var currentUserId = UserManager.GetUserId(User); 
+            IQueryable<string> typeQuery = from m in context.Vetement
+                                           orderby m.Type
+                                           select m.Type;
+
+            var vetements = from m in context.Vetement
+                            select m;
+            var isAuthorized = User.IsInRole(AuthorizationConstants.VetementAdministratorsRole);
+            var currentUserId = UserManager.GetUserId(User);
+            var vetementTypeVM = new VetementTypeViewModel();
             if (!isAuthorized)
-                vetements = vetements.Where(v => v.ProprietaireId == currentUserId);
-            return View(await vetements.ToListAsync()); }
+            {
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    vetements = vetements.Where(s => s.Nom!.Contains(searchString));
+                }
+
+                if (!string.IsNullOrEmpty(vetementType))
+                {
+                    vetements = vetements.Where(x => x.Type == vetementType);
+                }
+
+                var vetementTempVM = new VetementTypeViewModel
+                {
+                    Type = new SelectList(await typeQuery.Distinct().ToListAsync()),
+                    Vetements = await vetements.Where(v => v.ProprietaireId == currentUserId).ToListAsync()
+                };
+                vetementTypeVM = vetementTempVM;
+            }
+            return View(vetementTypeVM);
+        }
 
         // GET: Vetements/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -64,11 +91,26 @@ namespace Atelier.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("VetementId,Nom,Description,DateObtention,Type,Image")] Vetement vetement)
+        public async Task<IActionResult> Create([Bind("VetementId,Nom,Description,DateObtention,Type,ImageVetement")] VetementAddViewModel model)
         {
             if (ModelState.IsValid)
             {
-                vetement.ProprietaireId = UserManager.GetUserId(User);
+                
+                model.ProprietaireId = UserManager.GetUserId(User);
+                
+
+                string uniqueFileName = UploadedFile(model);
+                Vetement vetement = new Vetement
+                {
+                    ProprietaireId = model.ProprietaireId,
+                    VetementId = model.VetementId,
+                    Nom = model.Nom,
+                    Description = model.Description,
+                    DateObtention = model.DateObtention,
+                    Type = model.Type,
+                    ImageVetement = uniqueFileName,
+                };
+
                 var isAuthorized = await AuthorizationService.AuthorizeAsync(
                     User, vetement, VetementOperations.Create);
 
@@ -79,7 +121,24 @@ namespace Atelier.Controllers
                 await context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(vetement);
+            return View();
+        }
+
+        private string UploadedFile(VetementAddViewModel model)
+        {
+            string uniqueFileName = null;
+
+            if (model.ImageVetement != null)
+            {
+                string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "images");
+                uniqueFileName = Guid.NewGuid().ToString() + "_" + model.ImageVetement.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    model.ImageVetement.CopyTo(fileStream);
+                }
+            }
+            return uniqueFileName;
         }
 
         // GET: Vetements/Edit/5
