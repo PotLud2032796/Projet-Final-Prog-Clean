@@ -51,6 +51,122 @@ namespace Atelier.Controllers
                     vetements = vetements.Where(s => s.Nom!.Contains(searchString));
                 }
 
+        // GET: Aleatoire
+        public async Task<IActionResult> Random()
+        {
+            if (context.Vetement == null)
+                return NotFound();
+
+            var isAuthorized = User.IsInRole(AuthorizationConstants.VetementAdministratorsRole);
+
+            //CREATION TENU RANDOM
+
+            //RECUPERATION DE DONNEES
+            /*var vetements = from v in context.Vetement select v;
+            var currentUserId = UserManager.GetUserId(User);
+            var rnd = new Random();
+
+            //RANDOMISATEUR
+            var RandomVetements = from v in context.Vetement select v;
+            var randomNumber = 1;
+
+            //DONNES
+            List<int> idRandomTenu = new List<int>();
+            var vetementsChoisis = from v in context.Vetement select v;
+            int query;
+            var RandomTenu = from v in context.Vetement select v;*/
+            List<int> idRandomTenu = new List<int>();
+
+            var rnd = new Random();
+            var RandomTenu = from v in context.Vetement select v;
+            var vetements = from v in context.Vetement select v;
+
+            //TENU
+            bool IsBody = false;
+
+            if (!isAuthorized)
+            {
+                //HAUT
+                try
+                {
+                    idRandomTenu.Add(ChoixPieceRandom("haut"));
+                }
+                catch (Exception e)
+                {
+                }
+
+                //VERIFICATION DE TENU BODY
+                try
+                {
+                    if (vetements.Where(t => idRandomTenu.Contains(t.VetementId)).First().IsTenu2 == "oui")
+                        IsBody = true;
+                }
+                catch (Exception e)
+                {
+                }
+
+                //TETE
+                try
+                {
+                    if (rnd.Next(0, 2) == 1)
+                        idRandomTenu.Add(ChoixPieceRandom("tete"));
+                }
+                catch (Exception e)
+                {
+                }
+
+                //HAUT
+                try
+                {
+                    if (!IsBody)
+                        idRandomTenu.Add(ChoixPieceRandom("bas"));
+                }
+                catch (Exception e)
+                {
+                }
+
+                //SOUS VETEMENT
+                try
+                {
+                    idRandomTenu.Add(ChoixPieceRandom("dessous"));
+                }
+                catch (Exception e)
+                {
+                }
+
+                //PIED
+                try
+                {
+                    idRandomTenu.Add(ChoixPieceRandom("pied"));
+                }
+                catch (Exception e)
+                {
+                }
+
+                //SELECT LA TENU
+                RandomTenu = vetements.Where(t => idRandomTenu.Contains(t.VetementId));
+            }
+            return View(await RandomTenu.ToListAsync());
+        }
+
+        private int ChoixPieceRandom(string place)
+        {
+            //RECUPERATION DE DONNEES
+            var vetements = from v in context.Vetement select v;
+            var currentUserId = UserManager.GetUserId(User);
+
+            //SELECT LES VETEMENTS DU TYPE PLACE
+            var vetementsChoisis = vetements.Where(v => v.ProprietaireId == currentUserId && v.Type == place);
+
+            //CHOISIS UN VETEMENT RANDOM
+            var rnd = new Random();
+            var randomNumber = rnd.Next(0, vetementsChoisis.Count());
+            var RandomVetements = vetementsChoisis.Skip(randomNumber).Take(1);
+
+            //RETURN
+            return RandomVetements.First().VetementId;
+        }
+
                 if (!string.IsNullOrEmpty(vetementType))
                 {
                     vetements = vetements.Where(x => x.Type == vetementType);
@@ -91,7 +207,7 @@ namespace Atelier.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("VetementId,Nom,Description,DateObtention,Type,ImageVetement")] VetementAddViewModel model)
+        public async Task<IActionResult> Create([Bind("VetementId,Nom,Description,DateObtention,Type,ImageVetement, IsTenu2")] VetementAddViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -166,7 +282,7 @@ namespace Atelier.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("VetementId,Nom,Description,DateObtention,Type,Image")] Vetement vetement)
+        public async Task<IActionResult> Edit(int id, [Bind("VetementId,Nom,Description,DateObtention,Type,IsTenu2,Image")] Vetement vetement)
         {
            
 

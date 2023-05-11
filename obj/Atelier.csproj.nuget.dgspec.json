@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "M:\\Code\\Prog4\\Atelier\\Atelier.csproj": {}
+    "M:\\Programation\\ProjetFinSessionLingeFinalFin\\Projet-Final-Prog-Clean\\Atelier.csproj": {}
   },
   "projects": {
-    "M:\\Code\\Prog4\\Atelier\\Atelier.csproj": {
+    "M:\\Programation\\ProjetFinSessionLingeFinalFin\\Projet-Final-Prog-Clean\\Atelier.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "M:\\Code\\Prog4\\Atelier\\Atelier.csproj",
+        "projectUniqueName": "M:\\Programation\\ProjetFinSessionLingeFinalFin\\Projet-Final-Prog-Clean\\Atelier.csproj",
         "projectName": "Atelier",
-        "projectPath": "M:\\Code\\Prog4\\Atelier\\Atelier.csproj",
-        "packagesPath": "C:\\Users\\1833263\\.nuget\\packages\\",
-        "outputPath": "M:\\Code\\Prog4\\Atelier\\obj\\",
+        "projectPath": "M:\\Programation\\ProjetFinSessionLingeFinalFin\\Projet-Final-Prog-Clean\\Atelier.csproj",
+        "packagesPath": "C:\\Users\\2032796\\.nuget\\packages\\",
+        "outputPath": "M:\\Programation\\ProjetFinSessionLingeFinalFin\\Projet-Final-Prog-Clean\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\1833263\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\2032796\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
